@@ -17,8 +17,8 @@ cache:
 build-job:
   stage: build
   script:
-    - echo "🔧 Building the project..."
-    - mvn clean compile
+    - echo "installing dependencies ..."
+    - mvn clean install
   artifacts:
     paths:
       - target/
@@ -29,7 +29,7 @@ build-job:
 test-job:
   stage: test
   script:
-    - echo "🧪 Running tests..."
+    - echo "Running tests..."
     - mvn test
   only:
     - main
@@ -38,7 +38,8 @@ test-job:
 deploy-job:
   stage: deploy
   script:
-    - echo "🚀 Deploying application..."
+    - echo "Deploying application..."
     - echo "Hello app deployed successfully!"
   only:
     - main
+
