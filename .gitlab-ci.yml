@@ -1,51 +1,44 @@
 stages:
   - build
   - test
-  - package
+  - deploy
 
-# ---------------------------
+# Use official Maven image with JDK 17
+image: maven:3.9.6-eclipse-temurin-17
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository
+
 # Stage 1: Build
-# ---------------------------
 build-job:
   stage: build
-  image: maven:3.9.6-eclipse-temurin-17
   script:
-    - echo "Building the project..."
+    - echo "🔧 Building the project..."
     - mvn clean compile
   artifacts:
     paths:
       - target/
-    expire_in: 1 hour
+  only:
+    - main
 
-# ---------------------------
 # Stage 2: Test
-# ---------------------------
 test-job:
   stage: test
-  image: maven:3.9.6-eclipse-temurin-17
   script:
-    - echo "Running tests..."
+    - echo "🧪 Running tests..."
     - mvn test
-  dependencies:
-    - build-job
-  artifacts:
-    when: always
-    reports:
-      junit: target/surefire-reports/TEST-*.xml
-    expire_in: 1 hour
+  only:
+    - main
 
-# ---------------------------
-# Stage 3: Package
-# ---------------------------
-package-job:
-  stage: package
-  image: maven:3.9.6-eclipse-temurin-17
+# Stage 3: Deploy (dummy step)
+deploy-job:
+  stage: deploy
   script:
-    - echo "Packaging the application..."
-    - mvn package
-  dependencies:
-    - test-job
-  artifacts:
-    paths:
-      - target/*.jar
-    expire_in: 1 week
+    - echo "🚀 Deploying application..."
+    - echo "Hello app deployed successfully!"
+  only:
+    - main
